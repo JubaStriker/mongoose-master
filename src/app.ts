@@ -1,8 +1,12 @@
-const express = require('express')
-const app = express()
+import express, { Application, Request, Response, json } from 'express';
+import cors from 'cors';
 
+const app: Application = express()
 
-app.get('/', (req: Request, res) => {
+app.use(express.json())
+app.use(cors())
+
+app.get('/', (req: Request, res: Response) => {
     res.send('Hello World!')
 })
 
