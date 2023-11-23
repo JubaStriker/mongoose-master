@@ -17,11 +17,11 @@ const createStudent = async (req: Request, res: Response) => {
       message: 'Student created successfully',
       data: result,
     });
-  } catch (e) {
+  } catch (e: any) {
     console.log(e);
     res.status(500).json({
       success: false,
-      message: 'Something went wrong',
+      message: e.message || 'Something went wrong',
       error: e,
     });
   }
