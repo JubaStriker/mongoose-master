@@ -1,14 +1,18 @@
 import { Student } from '../student.models';
 import { TStudent } from './student.interface';
-import { Model } from 'mongoose';
 
 const createStudentIntoDb = async (studentData: TStudent) => {
-  // const result = await StudentModel.create(studentData);
-  const student = new Student(studentData);
-  if (await student.isUserExists(student.id)) {
+  if (await Student.isUserExists(studentData.id)) {
     throw new Error(`Student already exists`);
   }
-  const result = await student.save();
+  const result = await Student.create(studentData);
+
+  // const student = new Student(studentData);
+  // if (await student.isUserExists(student.id)) {
+  //   throw new Error(`Student already exists`);
+  // }
+  // const result = await student.save();
+
   return result;
 };
 
@@ -26,13 +30,3 @@ export const StudentServices = {
   getAllStudentsFromDb,
   getSingleStudentFromDb,
 };
-
-export type StudentMethods = {
-  isUserExists(id: string): Promise<TStudent | null>;
-};
-
-export type StudentModel = Model<
-  TStudent,
-  Record<string, never>,
-  StudentMethods
->;

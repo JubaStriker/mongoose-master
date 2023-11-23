@@ -1,12 +1,13 @@
 import { Schema, model } from 'mongoose';
 import {
+  // StudentMethods,
+  StudentModel,
   TGuardian,
   TLocalGuardian,
   TStudent,
   TUserName,
 } from './students/student.interface';
 import validator from 'validator';
-import { StudentMethods, StudentModel } from './students/student.service';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -72,11 +73,17 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
   },
 });
 
-const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
+const studentSchema = new Schema<TStudent, StudentModel>({
   id: {
     type: String,
     required: [true, 'Student ID is required'],
     unique: true,
+  },
+  password: {
+    type: String,
+    required: [true, 'Password ID is required'],
+    unique: true,
+    maxLength: [20, 'Password cannot be more than 20 characters'],
   },
   name: {
     type: userNameSchema,
@@ -135,9 +142,24 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
   },
 });
 
-studentSchema.methods.isUserExists = async function (id: string) {
+// pre save middleware/hook
+studentSchema.pre('save', function () {
+  console.log(this, 'pre hook : we will save the data');
+});
+studentSchema.post('save', function () {
+  console.log(this, 'post hook : we saved the data');
+});
+
+// Creating a custom static method
+studentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
   return existingUser;
 };
+
+// Creating a custom instance method
+// studentSchema.methods.isUserExists = async function (id: string) {
+//   const existingUser = await Student.findOne({ id });
+//   return existingUser;
+// };
 
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);
