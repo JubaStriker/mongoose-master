@@ -8,7 +8,8 @@ import {
   TUserName,
 } from './students/student.interface';
 import validator from 'validator';
-
+import bcrypt from 'bcrypt';
+import config from '../config';
 const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
@@ -82,7 +83,6 @@ const studentSchema = new Schema<TStudent, StudentModel>({
   password: {
     type: String,
     required: [true, 'Password ID is required'],
-    unique: true,
     maxLength: [20, 'Password cannot be more than 20 characters'],
   },
   name: {
@@ -140,14 +140,38 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     enum: ['active', 'blocked'],
     default: 'active',
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // pre save middleware/hook
-studentSchema.pre('save', function () {
+studentSchema.pre('save', async function (next) {
   console.log(this, 'pre hook : we will save the data');
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  // Hashing password and save into DB
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+  next();
 });
-studentSchema.post('save', function () {
+
+studentSchema.post('save', function (doc, next) {
+  doc.password = '';
   console.log(this, 'post hook : we saved the data');
+  next();
+});
+
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+studentSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
 });
 
 // Creating a custom static method

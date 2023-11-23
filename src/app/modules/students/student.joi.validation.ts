@@ -112,6 +112,7 @@ const studentValidationSchema = Joi.object({
     .messages({
       'any.only': 'Invalid status',
     }),
+  isDeleted: Joi.boolean(),
 });
 
 export default studentValidationSchema;
