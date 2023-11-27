@@ -162,7 +162,6 @@ studentSchema.virtual('fullName').get(function () {
 
 // pre save middleware/hook
 studentSchema.pre('save', async function (next) {
-  console.log(this, 'pre hook : we will save the data');
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this;
   // Hashing password and save into DB
@@ -175,7 +174,6 @@ studentSchema.pre('save', async function (next) {
 
 studentSchema.post('save', function (doc, next) {
   doc.password = '';
-  console.log(this, 'post hook : we saved the data');
   next();
 });
 
