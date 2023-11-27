@@ -1,7 +1,11 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { UserServices } from './user.services';
 
-const createStudent = async (req: Request, res: Response) => {
+const createStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { password, student: studentData } = req.body;
     // const { error, value } = studentValidationSchema.validate(studentData);
@@ -21,12 +25,7 @@ const createStudent = async (req: Request, res: Response) => {
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    console.log(e);
-    res.status(500).json({
-      success: false,
-      message: e.message || 'Something went wrong',
-      error: e,
-    });
+    next(e);
   }
 };
 
