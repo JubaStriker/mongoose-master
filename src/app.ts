@@ -4,6 +4,7 @@ import cors from 'cors';
 import { StudentRoute } from './app/modules/students/student.route';
 import { UserRoute } from './app/modules/users/user.route';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
+import notFound from './app/middlewares/notFound';
 
 const app: Application = express();
 
@@ -23,5 +24,8 @@ app.get('/', (req: Request, res: Response) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 app.use(globalErrorHandler);
+
+// Not found route
+app.use(notFound);
 
 export default app;
