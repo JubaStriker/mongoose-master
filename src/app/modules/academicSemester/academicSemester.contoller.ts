@@ -23,7 +23,7 @@ const createAcademicSemester = async (
     next(e);
     sendResponse(res, {
       success: false,
-      message: 'Student creation failed',
+      message: e.message || 'Academic semester creation failed',
       data: e,
       statusCode: httpStatus.OK,
     });
