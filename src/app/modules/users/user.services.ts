@@ -1,4 +1,5 @@
 import config from '../../config';
+import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
 import { TStudent } from '../students/student.interface';
 import { Student } from '../students/student.models';
 import { TUser } from './user.interface';
@@ -6,7 +7,7 @@ import { User } from './user.model';
 
 const createStudentIntoDb = async (password: string, studentData: TStudent) => {
   // Create a user object
-  const userData: Partial<TUser> = {};
+  const userData: Partial<TUser> = {}; // Use TUser type with all fields being optional
   userData.password = password;
 
   // If password is not given, use default password
@@ -15,6 +16,9 @@ const createStudentIntoDb = async (password: string, studentData: TStudent) => {
   } else {
     userData.password = password;
   }
+
+  // Year semesterCode 4 digit number
+  const generatedStudentId = (payload: TAcademicSemester) => {};
 
   // Set role for user
   userData.role = 'student';
